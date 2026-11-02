@@ -1,0 +1,149 @@
+.fila {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pedidoTopo {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.pedidoTopo > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.whats {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.88rem;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 0.3rem;
+}
+
+.endereco {
+  display: flex;
+  gap: 0.4rem;
+  font-size: 0.92rem;
+  padding: 0.55rem 0.65rem;
+  background: var(--cor-superficie-2);
+  border-radius: 8px;
+}
+
+.itens {
+  list-style: none;
+  font-size: 0.92rem;
+}
+
+.itens li,
+.listaItens li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.totais {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.totais strong {
+  font-size: 1.2rem;
+}
+
+.observacao {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--cor-texto-suave);
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.formPedido {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.listaItens {
+  list-style: none;
+  color: var(--cor-texto);
+  font-weight: 400;
+}
+
+.quantidade {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.quantidade strong {
+  min-width: 1.4rem;
+  text-align: center;
+}
+
+.resumoEntrega {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.35rem 1rem;
+  margin: 1rem 0 0.6rem;
+  padding: 0.8rem;
+  background: var(--cor-superficie-2);
+  border-radius: 8px;
+}
+
+.resumoEntrega dd {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.formaDecidida {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem 0.4rem 0.7rem;
+  border: 1px solid var(--cor-primaria);
+  background: var(--cor-primaria-clara);
+  border-radius: 8px;
+  color: var(--cor-texto);
+  font-weight: 400;
+}
+
+.leitura {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-borda);
+}

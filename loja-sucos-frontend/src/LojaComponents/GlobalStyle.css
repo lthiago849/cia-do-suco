@@ -1,0 +1,520 @@
+:root {
+  --cor-fundo: #f6f4ef;
+  --cor-superficie: #ffffff;
+  --cor-superficie-2: #faf8f4;
+  --cor-borda: #e6e1d8;
+  --cor-texto: #2d2a26;
+  --cor-texto-suave: #6f6a62;
+
+  --cor-primaria: #e8742a;
+  --cor-primaria-escura: #c85d17;
+  --cor-primaria-clara: #fdeee3;
+  --cor-verde: #2f855a;
+  --cor-verde-clara: #e3f4ea;
+  --cor-perigo: #c53030;
+  --cor-perigo-clara: #fde8e8;
+  --cor-alerta: #b7791f;
+  --cor-alerta-clara: #fdf3dc;
+
+  --raio: 10px;
+  --sombra: 0 1px 2px rgba(45, 42, 38, 0.06), 0 2px 8px rgba(45, 42, 38, 0.05);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.1rem;
+  font-weight: 650;
+}
+
+a {
+  color: var(--cor-primaria-escura);
+}
+
+/* STYLE SCROLLBAR IN CHROME */
+::-webkit-scrollbar {
+  width: 0.6rem;
+  height: 0.5rem;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--cor-borda);
+  border-radius: 5rem;
+}
+
+/* ===== Botões ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  font-size: 0.95rem;
+  font-weight: 550;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--cor-superficie-2);
+  border-color: #d3ccc0;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primario {
+  background: var(--cor-primaria);
+  border-color: var(--cor-primaria);
+  color: #fff;
+}
+
+.btn-primario:hover:not(:disabled) {
+  background: var(--cor-primaria-escura);
+  border-color: var(--cor-primaria-escura);
+}
+
+.btn-perigo {
+  color: var(--cor-perigo);
+}
+
+.btn-perigo:hover:not(:disabled) {
+  background: var(--cor-perigo-clara);
+  border-color: var(--cor-perigo);
+}
+
+.btn-pequeno {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.btn-grande {
+  padding: 0.85rem 1.2rem;
+  font-size: 1.05rem;
+}
+
+/* ===== Formulários ===== */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 550;
+  color: var(--cor-texto-suave);
+}
+
+.campo input,
+.campo select,
+.campo textarea,
+.input {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus,
+.input:focus {
+  outline: 2px solid var(--cor-primaria-clara);
+  border-color: var(--cor-primaria);
+}
+
+.campo-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+}
+
+.form-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+
+/* ===== Layout de página ===== */
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.pagina-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.pagina-topo p {
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+}
+
+.card {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1.1rem;
+}
+
+.card h2 {
+  margin-bottom: 0.8rem;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.7rem;
+}
+
+.vazio {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--cor-texto-suave);
+}
+
+/* ===== Tabelas ===== */
+.tabela-wrapper {
+  overflow-x: auto;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.tabela th {
+  text-align: left;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--cor-texto-suave);
+  padding: 0.6rem 0.7rem;
+  border-bottom: 1px solid var(--cor-borda);
+  white-space: nowrap;
+}
+
+.tabela td {
+  padding: 0.65rem 0.7rem;
+  border-bottom: 1px solid var(--cor-borda);
+  vertical-align: top;
+}
+
+.tabela tr:last-child td {
+  border-bottom: none;
+}
+
+.tabela .num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabela tr.inativo td {
+  color: var(--cor-texto-suave);
+  text-decoration: line-through;
+}
+
+.tabela tr.clicavel {
+  cursor: pointer;
+}
+
+.tabela tr.clicavel:hover td {
+  background: var(--cor-superficie-2);
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-block;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto-suave);
+  white-space: nowrap;
+}
+
+.badge-verde {
+  background: var(--cor-verde-clara);
+  border-color: transparent;
+  color: var(--cor-verde);
+}
+
+.badge-alerta {
+  background: var(--cor-alerta-clara);
+  border-color: transparent;
+  color: var(--cor-alerta);
+}
+
+.badge-perigo {
+  background: var(--cor-perigo-clara);
+  border-color: transparent;
+  color: var(--cor-perigo);
+}
+
+.texto-suave {
+  color: var(--cor-texto-suave);
+  font-size: 0.88rem;
+}
+
+.texto-perigo {
+  color: var(--cor-perigo);
+}
+
+.texto-verde {
+  color: var(--cor-verde);
+}
+
+/* ===== Abas ===== */
+.abas {
+  display: flex;
+  gap: 0.3rem;
+  border-bottom: 1px solid var(--cor-borda);
+  overflow-x: auto;
+}
+
+.aba {
+  padding: 0.6rem 1rem;
+  border: none;
+  background: none;
+  border-bottom: 3px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.aba.ativa {
+  color: var(--cor-primaria-escura);
+  border-bottom-color: var(--cor-primaria);
+}
+
+/* ===== Filtros que recolhem no celular ===== */
+.recolhivel-conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.7rem;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* ===== Celular ===== */
+@media (max-width: 600px) {
+  body {
+    font-size: 14.5px;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  .pagina {
+    gap: 0.8rem;
+  }
+
+  .pagina-topo {
+    gap: 0.6rem;
+  }
+
+  /* Grupo com 2+ botões no topo (Estoque, Entregas): desce para a linha de baixo e divide a largura */
+  .pagina-topo > div:has(> .btn + .btn) {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pagina-topo > div:has(> .btn + .btn) > .btn {
+    flex: 1 1 auto;
+  }
+
+  /* Abas viram "pílulas" que quebram linha, em vez de uma faixa que rola para o lado */
+  .abas {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    border-bottom: none;
+    overflow: visible;
+  }
+
+  .aba {
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--cor-borda);
+    border-radius: 999px;
+    background: var(--cor-superficie);
+    font-size: 0.9rem;
+  }
+
+  .aba.ativa {
+    background: var(--cor-primaria-clara);
+    border-color: var(--cor-primaria);
+  }
+
+  /* A descrição da página ocupa espaço demais na tela pequena */
+  .pagina-topo p {
+    display: none;
+  }
+
+  .pagina-topo p.manter-celular {
+    display: block;
+  }
+
+  .card {
+    padding: 0.8rem;
+  }
+
+  .filtros {
+    gap: 0.5rem;
+  }
+
+  /* Seletor de período ocupa a largura do cartão; os botões quebram linha e se esticam para preencher */
+  .seletor-periodo {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .presets {
+    width: 100%;
+  }
+
+  .presets .btn {
+    flex: 1 1 auto;
+  }
+
+  .recolhivel-conteudo {
+    width: 100%;
+  }
+
+  .recolhivel-conteudo .campo {
+    flex: 1 1 140px;
+  }
+
+  .so-desktop {
+    display: none !important;
+  }
+
+  /* Tabela vira uma lista de cartões: cada linha é um cartão, cada célula é "rótulo  valor" */
+  .tabela-cartoes thead {
+    display: none;
+  }
+
+  .tabela-cartoes,
+  .tabela-cartoes tbody {
+    display: block;
+  }
+
+  .tabela-cartoes tr {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0.55rem 0.1rem;
+    border-bottom: 1px solid var(--cor-borda);
+  }
+
+  .tabela-cartoes tr:last-child {
+    border-bottom: none;
+  }
+
+  /* Cada célula: rótulo flutuando à esquerda e valor (um ou vários elementos) alinhado à direita */
+  .tabela-cartoes td {
+    display: flow-root;
+    padding: 0.15rem 0;
+    border-bottom: none;
+    text-align: right;
+  }
+
+  .tabela-cartoes td.num {
+    white-space: normal;
+  }
+
+  .tabela-cartoes td::before {
+    content: attr(data-rotulo);
+    float: left;
+    margin-right: 0.8rem;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.8;
+    color: var(--cor-texto-suave);
+  }
+
+  .tabela-cartoes td .campo-check {
+    justify-content: flex-end;
+  }
+
+  /* Célula principal (nome do cliente, produtos): vai para o topo do cartão, sem rótulo e com destaque */
+  .tabela-cartoes td.principal {
+    order: -1;
+    padding-right: 3.2rem;
+    text-align: left;
+    font-size: 0.98rem;
+  }
+
+  .tabela-cartoes td.principal::before,
+  .tabela-cartoes td:not([data-rotulo])::before {
+    content: none;
+  }
+
+  /* Botão de editar/cancelar no canto de cima do cartão, ao lado do nome */
+  .tabela-cartoes td.acao {
+    position: absolute;
+    top: 0.45rem;
+    right: 0;
+    padding: 0;
+  }
+
+  .tabela-cartoes td:empty {
+    display: none;
+  }
+}

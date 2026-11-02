@@ -1,0 +1,69 @@
+networks:
+  loja-sucos-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
+services:
+  db:
+    container_name: loja-sucos-database
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: LOJASUCOSDB
+      TZ: America/Sao_Paulo
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - loja-sucos-network
+
+  app:
+    container_name: loja-sucos-app
+    image: python:3.13.1-slim
+    working_dir: /app
+    env_file:
+      - ./app/.env
+    volumes:
+      - ./app:/app
+      - ./tests:/tests
+      - ./app/entrypoint.sh:/app/entrypoint.sh
+    environment:
+      DOCKER_COMPOSE: "true"
+      WATCHFILES_FORCE_POLLING: "true"
+      TZ: America/Sao_Paulo
+    depends_on:
+      - db
+    entrypoint: /bin/sh -c "apt-get update && apt-get install -y postgresql-client && /app/entrypoint.sh"
+    ports:
+      - "8000:8000"
+    networks:
+      - loja-sucos-network
+
+  flyway:
+    image: flyway/flyway:11
+    container_name: loja-sucos-flyway
+    command: -configFiles=/flyway/conf/flyway.config -locations=filesystem:/flyway/sql -connectRetries=60 -baselineOnMigrate=true migrate
+    volumes:
+      - ./app/migrations/versions:/flyway/sql
+      - ./app/migrations/flyway.config:/flyway/conf/flyway.config
+    depends_on:
+      - db
+    networks:
+      - loja-sucos-network
+
+  pgadmin:
+    container_name: loja-sucos-pgadmin
+    image: dpage/pgadmin4:latest
+    restart: always
+    networks:
+      - loja-sucos-network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@lojasucos.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "4042:80"

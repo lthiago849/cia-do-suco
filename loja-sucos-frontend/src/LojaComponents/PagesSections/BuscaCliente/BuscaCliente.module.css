@@ -1,0 +1,58 @@
+.container {
+  position: relative;
+}
+
+.campo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--cor-texto-suave);
+}
+
+.lista {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  list-style: none;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  box-shadow: var(--sombra);
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.lista button {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.lista button:hover {
+  background: var(--cor-primaria-clara);
+}
+
+.selecionado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--cor-primaria);
+  background: var(--cor-primaria-clara);
+  border-radius: 8px;
+}
+
+.selecionado div {
+  display: flex;
+  flex-direction: column;
+}

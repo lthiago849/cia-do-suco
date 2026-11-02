@@ -1,0 +1,24 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
+.env
+.Python
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Tests
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/

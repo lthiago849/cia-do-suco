@@ -1,0 +1,76 @@
+.colunas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.colunas h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.endereco {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.historico {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.historico summary {
+  cursor: pointer;
+  color: var(--cor-texto-suave);
+}
+
+.historico ul {
+  margin: 0.5rem 0 0 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.saldo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.saldo div {
+  display: flex;
+  flex-direction: column;
+}
+
+.saldo strong {
+  font-size: 1.6rem;
+}
+
+.subtitulo {
+  margin: 1.2rem 0 0.4rem;
+  font-size: 0.95rem;
+}
+
+.lista {
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.lista li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--cor-borda);
+}

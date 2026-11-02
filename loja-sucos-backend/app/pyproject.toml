@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "loja-sucos-backend"
+version = "2.0.0"
+description = "API da Loja de Sucos"
+authors = []
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.13"
+asyncpg = "*"
+bcrypt = "*"
+fastapi = {extras = ["standard"], version = "^0.115.0"}
+greenlet = "*"
+pydantic = "*"
+python-dotenv = "*"
+python-jose = "*"
+python-multipart = "*"
+sqlalchemy = "2.0.36"
+sqlmodel = "0.0.22"
+uvicorn = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+pytest = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

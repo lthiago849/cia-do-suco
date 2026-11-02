@@ -9,7 +9,7 @@ from app.const.enums import FormaPagamento
 from app.controllers.venda import listar_vendas, get_venda_by_id, criar_venda, cancelar_venda
 from app.db.db import get_session
 from app.schemas.auth import UsuarioOut
-from app.schemas.venda import VendaCreate, VendaResponse
+from app.schemas.venda import VendaCreate, VendaResponse, CancelamentoVenda
 from app.security.permissoes import ocultar_custos
 from app.security.auth import get_current_user, get_current_admin
 
@@ -41,6 +41,7 @@ async def criar_venda_endpoint(venda_create: VendaCreate, db: AsyncSession = Dep
 
 
 @router.post("/{id_venda}/cancelar", response_model=VendaResponse)
-async def cancelar_venda_endpoint(id_venda: UUID, db: AsyncSession = Depends(get_session),
+async def cancelar_venda_endpoint(id_venda: UUID, cancelamento: CancelamentoVenda,
+                                  db: AsyncSession = Depends(get_session),
                                   admin: UsuarioOut = Depends(get_current_admin)):
-    return await cancelar_venda(db, id_venda, admin.id)
+    return await cancelar_venda(db, id_venda, admin.id, cancelamento)

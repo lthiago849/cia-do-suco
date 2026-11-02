@@ -31,6 +31,9 @@ class ProdutoUpdate(BaseModel):
     quantidade_estoque: Optional[int] = Field(default=None, ge=0)
     descricao: Optional[str] = None
     ativo: Optional[bool] = None
+    # Com custo_unitario: grava esse custo também nas vendas deste produto que ficaram com custo zero
+    # (estoque lançado à mão, sem produção), para o lucro do painel ficar certo
+    aplicar_custo_vendas_sem_custo: bool = False
 
 
 class ProdutoResponse(BaseModel):
@@ -42,6 +45,8 @@ class ProdutoResponse(BaseModel):
     preco_venda: DecimalJson
     # Só para admin
     custo_unitario: Optional[DecimalJson] = None
+    # Só para admin: unidades vendidas com custo zero (o lucro delas aparece inflado no painel)
+    vendidos_sem_custo: Optional[int] = None
     quantidade_estoque: int
     descricao: Optional[str] = None
     ativo: bool

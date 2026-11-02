@@ -1,6 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Trash } from "@phosphor-icons/react";
+import { Plus, Trash, Warning } from "@phosphor-icons/react";
 
 import { useGlobalContext } from "../../GlobalContext";
 import { mensagemErro, useFetchData } from "../../Hooks/FetchData/useFetchData";
@@ -334,6 +334,12 @@ function CompraModal({ aberto, onFechar, produtos, ingredientes, onSalvo }: Comp
 
   const unidade =
     tipo === "ingrediente" ? NOMES_UNIDADE[ingredientes.find((i) => i.id === id)?.unidade_medida ?? "UN"] : "un";
+  const custoAtual =
+    (tipo === "ingrediente" ? ingredientes.find((i) => i.id === id) : produtos.find((p) => p.id === id))
+      ?.custo_unitario ?? 0;
+  // Menos da metade ou mais que o dobro do custo atual: quase sempre é o preço de uma unidade digitado no total
+  const custoForaDoNormal =
+    qtd > 1 && total > 0 && custoAtual > 0 && (total / qtd < custoAtual / 2 || total / qtd > custoAtual * 2);
 
   return (
     <Modal titulo="Registrar compra" aberto={aberto} onFechar={onFechar}>
@@ -390,7 +396,22 @@ function CompraModal({ aberto, onFechar, produtos, ingredientes, onSalvo }: Comp
         </div>
         {qtd > 0 && total >= 0 && (
           <p className="texto-suave" style={{ marginTop: "0.8rem" }}>
-            Custo por {unidade}: {moeda(total / qtd)}
+            Custo por {unidade}: <strong>{moeda(total / qtd)}</strong>
+            {qtd > 1 && total > 0 && !custoForaDoNormal && (
+              <>
+                . Se {moeda(total)} é o preço de 1 {unidade}, o total é {moeda(total * qtd)}.
+              </>
+            )}
+          </p>
+        )}
+        {custoForaDoNormal && (
+          <p className="aviso-compra">
+            <Warning size={18} weight="fill" />
+            <span>
+              Está saindo {moeda(total / qtd)} por {unidade}, mas o custo atual é {moeda(custoAtual)} por {unidade}.
+              Confira: o campo é o <strong>valor pago no total</strong> ({numero(qtd)} {unidade} × {moeda(custoAtual)} ≈{" "}
+              {moeda(qtd * custoAtual)}), não o preço de um {unidade}.
+            </span>
           </p>
         )}
         <div className="form-acoes">

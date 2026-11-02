@@ -115,7 +115,7 @@ export function useFetchData() {
       getProdutos: (filtros: { categoria?: string; ativo?: boolean; busca?: string } = {}) =>
         request<Produto[]>("GET", `/produtos/${query(filtros)}`),
       criarProduto: (dados: Partial<Produto>) => request<Produto>("POST", "/produtos/", dados),
-      atualizarProduto: (id: string, dados: Partial<Produto>) => request<Produto>("PUT", `/produtos/${id}`, dados),
+      atualizarProduto: (id: string, dados: Partial<Produto> & { aplicar_custo_vendas_sem_custo?: boolean }) => request<Produto>("PUT", `/produtos/${id}`, dados),
 
       // ==== INGREDIENTES ====
       getIngredientes: (filtros: { tipo?: string; ativo?: boolean } = {}) =>
@@ -163,7 +163,7 @@ export function useFetchData() {
         cliente_id?: string;
         observacao?: string;
       }) => request<Venda>("POST", "/vendas/", dados),
-      cancelarVenda: (id: string) => request<Venda>("POST", `/vendas/${id}/cancelar`),
+      cancelarVenda: (id: string, motivo: string) => request<Venda>("POST", `/vendas/${id}/cancelar`, { motivo }),
 
       // ==== CLIENTES ====
       getClientes: (busca = "") => request<Cliente[]>("GET", `/clientes/${query({ busca, ativo: true })}`),

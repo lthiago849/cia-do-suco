@@ -344,7 +344,8 @@ def main():
 
     # Duas vendas registradas errado e canceladas pelo admin
     for venda_id, quando in random.sample(vendas_registradas[:-50], 2):
-        status, _ = chamar("POST", f"/vendas/{venda_id}/cancelar", token=admin)
+        status, _ = chamar("POST", f"/vendas/{venda_id}/cancelar",
+                           {"motivo": random.choice(["Lançou o produto errado", "Registrou duas vezes"])}, admin)
         if status == 200:
             ajustes.append(("venda", venda_id, {"cancelada_em": quando + timedelta(minutes=5)}))
 

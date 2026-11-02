@@ -4,6 +4,7 @@ from decimal import Decimal
 from collections import defaultdict
 from typing import Optional
 
+from sqlalchemy.orm import aliased
 from sqlmodel import select, col
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -16,17 +17,20 @@ from app.models.item_venda import ItemVenda
 from app.models.produto import Produto
 from app.models.usuario import Usuario
 from app.models.venda import Venda
-from app.schemas.venda import VendaCreate, VendaResponse, ItemVendaResponse
+from app.schemas.venda import VendaCreate, VendaResponse, ItemVendaResponse, CancelamentoVenda
 from app.utils.estoque import arredondar_dinheiro
 from app.utils.periodo import filtrar_periodo
 from app.validations.validar_horario import validar_horario
 
 
 def query_vendas():
+    quem_cancelou = aliased(Usuario)
     return (
-        select(Venda, Usuario.nome.label("usuario_nome"), Cliente.nome.label("cliente_nome"))
+        select(Venda, Usuario.nome.label("usuario_nome"), Cliente.nome.label("cliente_nome"),
+               quem_cancelou.nome.label("cancelada_por_nome"))
         .join(Usuario, Venda.usuario_id == Usuario.id)
         .outerjoin(Cliente, Venda.cliente_id == Cliente.id)
+        .outerjoin(quem_cancelou, Venda.cancelada_por == quem_cancelou.id)
     )
 
 
@@ -36,7 +40,7 @@ async def montar_vendas(db: AsyncSession, query) -> list[VendaResponse]:
     if not linhas:
         return []
 
-    ids_vendas = [venda.id for venda, _, _ in linhas]
+    ids_vendas = [venda.id for venda, *_ in linhas]
     result_itens = await db.exec(
         select(ItemVenda, Produto.nome, Produto.categoria)
         .join(Produto, ItemVenda.produto_id == Produto.id)
@@ -60,9 +64,10 @@ async def montar_vendas(db: AsyncSession, query) -> list[VendaResponse]:
             **venda.model_dump(),
             "usuario_nome": usuario_nome,
             "cliente_nome": cliente_nome,
+            "cancelada_por_nome": cancelada_por_nome,
             "itens": itens_por_venda[venda.id],
         })
-        for venda, usuario_nome, cliente_nome in linhas
+        for venda, usuario_nome, cliente_nome, cancelada_por_nome in linhas
     ]
 
 
@@ -175,8 +180,9 @@ async def registrar_venda(db: AsyncSession, venda_create: VendaCreate, usuario_i
     return venda
 
 
-async def cancelar_venda(db: AsyncSession, id_venda: UUID, usuario_id: UUID) -> VendaResponse:
-    """Marca a venda como cancelada e devolve os produtos ao estoque"""
+async def cancelar_venda(db: AsyncSession, id_venda: UUID, usuario_id: UUID,
+                         cancelamento: CancelamentoVenda) -> VendaResponse:
+    """Marca a venda como cancelada (guardando quem cancelou e o motivo) e devolve os produtos ao estoque"""
     result = await db.exec(select(Venda).where(Venda.id == id_venda).with_for_update())
     venda = result.one_or_none()
     if not venda:
@@ -194,6 +200,7 @@ async def cancelar_venda(db: AsyncSession, id_venda: UUID, usuario_id: UUID) -> 
 
     venda.cancelada_em = validar_horario()
     venda.cancelada_por = usuario_id
+    venda.motivo_cancelamento = cancelamento.motivo
     db.add(venda)
     await db.commit()
 

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { Warning } from "@phosphor-icons/react";
 import HighchartsReact from "highcharts-react-official";
 
 import { mensagemErro, useFetchData } from "../../../Hooks/FetchData/useFetchData";
@@ -37,8 +39,9 @@ export default function Dashboard() {
   const [periodo, setPeriodo] = useState<Periodo>({ data_inicio: hojeISO(-29), data_fim: hojeISO() });
   const [dados, setDados] = useState<Dados | null>(null);
   const [carregando, setCarregando] = useState(false);
+  const [vendidosSemCusto, setVendidosSemCusto] = useState(0);
 
-  const { getResumo, getRelatorioProdutos, getVendasPorDia, getVendasPorDiaSemana, getHorariosPico } = api;
+  const { getProdutos, getResumo, getRelatorioProdutos, getVendasPorDia, getVendasPorDiaSemana, getHorariosPico } = api;
 
   useEffect(() => {
     let ativo = true;
@@ -71,6 +74,13 @@ export default function Dashboard() {
     };
   }, [periodo, getResumo, getRelatorioProdutos, getVendasPorDia, getVendasPorDiaSemana, getHorariosPico]);
 
+  // Unidades vendidas com custo zero deixam o lucro maior que o real: avisa e manda corrigir em Produtos
+  useEffect(() => {
+    getProdutos().then((r) => {
+      if (r.ok) setVendidosSemCusto(r.data.reduce((soma, p) => soma + (p.vendidos_sem_custo ?? 0), 0));
+    });
+  }, [getProdutos]);
+
   return (
     <div className="pagina">
       <div className="pagina-topo">
@@ -82,6 +92,21 @@ export default function Dashboard() {
           </p>
         </div>
       </div>
+
+      {vendidosSemCusto > 0 && (
+        <div className="card aviso-alerta">
+          <Warning size={20} weight="fill" />
+          <div>
+            <strong>
+              {vendidosSemCusto} unidade{vendidosSemCusto === 1 ? "" : "s"} vendida{vendidosSemCusto === 1 ? "" : "s"}{" "}
+              sem custo: o lucro abaixo está maior que o real.
+            </strong>
+            <p className="texto-suave">
+              <Link to="/admin/produtos">Informe o custo desses produtos em Produtos</Link> para corrigir.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Um único filtro para todos os gráficos */}
       <div className="card">

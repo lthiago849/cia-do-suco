@@ -27,6 +27,17 @@ class VendaCreate(BaseModel):
         return self
 
 
+class CancelamentoVenda(BaseModel):
+    motivo: str = Field(min_length=3)
+
+    @model_validator(mode="after")
+    def limpar_motivo(self):
+        self.motivo = self.motivo.strip()
+        if len(self.motivo) < 3:
+            raise ValueError("Escreva o motivo do cancelamento.")
+        return self
+
+
 class ItemVendaResponse(BaseModel):
     produto_id: UUID
     produto_nome: str
@@ -57,6 +68,8 @@ class VendaResponse(BaseModel):
     cliente_nome: Optional[str] = None
     observacao: Optional[str] = None
     cancelada_em: Optional[datetime] = None
+    cancelada_por_nome: Optional[str] = None
+    motivo_cancelamento: Optional[str] = None
     itens: list[ItemVendaResponse]
 
     model_config = ConfigDict(from_attributes=True)

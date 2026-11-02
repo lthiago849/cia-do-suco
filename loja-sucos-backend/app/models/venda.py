@@ -35,6 +35,7 @@ class Venda(SQLModel, table=True):
         default_factory=validar_horario, sa_type=DateTime(timezone=True), nullable=False)
     cancelada_em: Optional[datetime] = Field(default=None, sa_type=DateTime(timezone=True), nullable=True)
     cancelada_por: Optional[UUID] = Field(default=None, foreign_key="usuario.id", nullable=True)
+    motivo_cancelamento: Optional[str] = Field(default=None, nullable=True)
 
     created_at: datetime = Field(
         default_factory=validar_horario, sa_type=DateTime(timezone=True), nullable=False)

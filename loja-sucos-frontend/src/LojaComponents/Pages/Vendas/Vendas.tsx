@@ -8,14 +8,16 @@ import { mensagemErro, useFetchData } from "../../Hooks/FetchData/useFetchData";
 import { FormaPagamento, Periodo, Venda } from "../../Interfaces";
 import { NOMES_FORMA_PAGAMENTO, dataHora, hojeISO, moeda } from "../../Utils/formatar";
 import SeletorPeriodo from "../../PagesSections/SeletorPeriodo/SeletorPeriodo";
+import CancelarVendaModal from "./CancelarVendaModal";
 
 export default function Vendas() {
   const { account } = useGlobalContext();
-  const { getVendas, cancelarVenda } = useFetchData();
+  const { getVendas } = useFetchData();
   const [periodo, setPeriodo] = useState<Periodo>({ data_inicio: hojeISO(), data_fim: hojeISO() });
   const [forma, setForma] = useState<FormaPagamento | "">("");
   const [mostrarCanceladas, setMostrarCanceladas] = useState(false);
   const [vendas, setVendas] = useState<Venda[]>([]);
+  const [cancelando, setCancelando] = useState<Venda | null>(null);
 
   const ehAdmin = account.usuario?.tipo === "ADMIN";
 
@@ -32,15 +34,6 @@ export default function Vendas() {
   useEffect(() => {
     carregar();
   }, [carregar]);
-
-  async function cancelar(venda: Venda) {
-    if (!window.confirm(`Cancelar a venda de ${moeda(venda.valor_total)}? Os produtos voltam para o estoque.`)) return;
-    const resp = await cancelarVenda(venda.id);
-    if (resp.ok) {
-      toast.success("Venda cancelada e estoque devolvido.");
-      carregar();
-    } else toast.error(mensagemErro(resp.data));
-  }
 
   const validas = vendas.filter((v) => !v.cancelada_em);
   // O que entrou no caixa: produtos + entrega + acréscimo do cartão
@@ -103,10 +96,17 @@ export default function Vendas() {
                 {vendas.map((v) => (
                   <tr key={v.id} className={v.cancelada_em ? "inativo" : ""}>
                     <td data-rotulo="Quando">{dataHora(v.data_venda)}</td>
-                    <td className="principal">
+                    <td className={ehAdmin ? "principal acao-larga" : "principal"}>
                       <div>
                         {v.itens.map((i) => `${i.quantidade}× ${i.produto_nome}`).join(", ")}
                         {v.observacao && <div className="texto-suave">{v.observacao}</div>}
+                        {v.cancelada_em && (
+                          <div className="texto-perigo motivo-cancelamento">
+                            Cancelada em {dataHora(v.cancelada_em)}
+                            {v.cancelada_por_nome ? ` por ${v.cancelada_por_nome}` : ""}
+                            {v.motivo_cancelamento ? `: ${v.motivo_cancelamento}` : ""}
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td data-rotulo="Pagamento">
@@ -148,10 +148,11 @@ export default function Vendas() {
                         ) : (
                           <button
                             className="btn btn-pequeno btn-perigo"
-                            onClick={() => cancelar(v)}
+                            onClick={() => setCancelando(v)}
                             title="Cancelar venda"
                           >
                             <Prohibit size={16} />
+                            Cancelar
                           </button>
                         )}
                       </td>
@@ -163,6 +164,15 @@ export default function Vendas() {
           </div>
         )}
       </div>
+
+      <CancelarVendaModal
+        venda={cancelando}
+        onFechar={() => setCancelando(null)}
+        onCancelada={() => {
+          setCancelando(null);
+          carregar();
+        }}
+      />
     </div>
   );
 }

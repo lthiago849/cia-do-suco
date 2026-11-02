@@ -25,6 +25,8 @@ export interface Produto {
   ingrediente_nome: string | null;
   preco_venda: number;
   custo_unitario: number | null;
+  /** Só para admin: unidades vendidas com custo zero (lucro inflado no painel) */
+  vendidos_sem_custo?: number | null;
   quantidade_estoque: number;
   descricao: string | null;
   ativo: boolean;
@@ -137,6 +139,8 @@ export interface Venda {
   cliente_nome: string | null;
   observacao: string | null;
   cancelada_em: string | null;
+  cancelada_por_nome?: string | null;
+  motivo_cancelamento?: string | null;
   itens: ItemVenda[];
 }
 

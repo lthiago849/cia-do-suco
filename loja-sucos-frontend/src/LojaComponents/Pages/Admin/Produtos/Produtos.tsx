@@ -263,16 +263,31 @@ export default function Produtos() {
                 Corrigir custo manualmente
               </label>
             )}
+            {form.ingrediente_id && form.corrigirCusto && editando?.custo_ultima_producao != null && (
+              <div className="sugestao-custo" style={{ gridColumn: "1 / -1" }}>
+                <span>
+                  Na última produção, cada unidade custou <strong>{moeda(editando.custo_ultima_producao)}</strong>.
+                </span>
+                <button
+                  type="button"
+                  className="btn btn-pequeno"
+                  onClick={() => set("custo_unitario", virgula(editando.custo_ultima_producao ?? 0))}
+                >
+                  Usar este valor
+                </button>
+              </div>
+            )}
             {form.ingrediente_id && form.corrigirCusto && (
               <p className="texto-suave" style={{ gridColumn: "1 / -1" }}>
-                Some quanto vai em uma unidade. Preços atuais:{" "}
+                {editando?.custo_ultima_producao == null && "Ainda não houve produção deste suco. "}
+                Para calcular à mão, some o que vai em uma garrafa:{" "}
                 {ingredientes
                   .filter(
                     (i) => i.id === form.ingrediente_id || i.tipo === "ACUCAR" || (i.tipo === "GARRAFA" && i.ativo),
                   )
-                  .map((i) => `${i.nome} ${moeda(i.custo_unitario ?? 0)}/${NOMES_UNIDADE[i.unidade_medida]}`)
-                  .join(" · ")}
-                . Ex.: 0,375 kg de polpa a R$ 16,00 + 0,25 kg de açúcar a R$ 2,95 + garrafa R$ 0,50 = R$ 7,24.
+                  .map((i) => `${i.nome} (${moeda(i.custo_unitario ?? 0)}/${NOMES_UNIDADE[i.unidade_medida]})`)
+                  .join(" + ")}
+                , cada um na quantidade usada em uma garrafa.
               </p>
             )}
             {!!editando?.vendidos_sem_custo && (!form.ingrediente_id || form.corrigirCusto) && (

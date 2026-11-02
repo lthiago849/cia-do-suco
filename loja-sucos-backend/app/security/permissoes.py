@@ -4,7 +4,7 @@ from app.const.enums import TipoUsuario
 from app.schemas.auth import UsuarioOut
 
 # Campos que revelam custo/lucro. Só o administrador recebe esses valores.
-CAMPOS_RESTRITOS_ADMIN = {"custo_unitario", "custo_total", "taxa_pagamento", "valor_perdido", "ultimo_custo_compra", "vendidos_sem_custo"}
+CAMPOS_RESTRITOS_ADMIN = {"custo_unitario", "custo_total", "taxa_pagamento", "valor_perdido", "ultimo_custo_compra", "vendidos_sem_custo", "custo_ultima_producao"}
 
 
 def ocultar_custos(resposta, usuario: UsuarioOut):

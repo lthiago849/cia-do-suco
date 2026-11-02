@@ -14,7 +14,7 @@ from app.models.producao import Producao
 from app.models.produto import Produto
 from app.models.usuario import Usuario
 from app.schemas.producao import ProducaoCreate, ProducaoResponse
-from app.utils.estoque import arredondar_dinheiro, calcular_custo_medio, distribuir_fifo
+from app.utils.estoque import arredondar_dinheiro, calcular_custo_medio, distribuir_fifo, QUATRO_CASAS
 from app.utils.periodo import filtrar_periodo
 
 
@@ -91,8 +91,12 @@ async def registrar_producao(db: AsyncSession, producao_create: ProducaoCreate, 
     polpa.quantidade_estoque -= producao_create.polpa_usada
     db.add(polpa)
 
-    produto.custo_unitario = calcular_custo_medio(produto.quantidade_estoque, produto.custo_unitario,
-                                                  producao_create.quantidade_produzida, custo_total)
+    if produto.custo_unitario == 0:
+        # Estoque anterior sem custo (lançado à mão): vale o custo desta produção, em vez de uma média com zero
+        produto.custo_unitario = (custo_total / producao_create.quantidade_produzida).quantize(QUATRO_CASAS)
+    else:
+        produto.custo_unitario = calcular_custo_medio(produto.quantidade_estoque, produto.custo_unitario,
+                                                      producao_create.quantidade_produzida, custo_total)
     produto.quantidade_estoque += producao_create.quantidade_produzida
     db.add(produto)
 

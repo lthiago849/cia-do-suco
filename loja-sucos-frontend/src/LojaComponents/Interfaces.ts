@@ -27,6 +27,8 @@ export interface Produto {
   custo_unitario: number | null;
   /** Só para admin: unidades vendidas com custo zero (lucro inflado no painel) */
   vendidos_sem_custo?: number | null;
+  /** Só para admin: custo de cada unidade na produção mais recente */
+  custo_ultima_producao?: number | null;
   quantidade_estoque: number;
   descricao: string | null;
   ativo: boolean;

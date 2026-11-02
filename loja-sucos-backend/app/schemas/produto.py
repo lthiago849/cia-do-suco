@@ -47,6 +47,8 @@ class ProdutoResponse(BaseModel):
     custo_unitario: Optional[DecimalJson] = None
     # Só para admin: unidades vendidas com custo zero (o lucro delas aparece inflado no painel)
     vendidos_sem_custo: Optional[int] = None
+    # Só para admin: custo de cada unidade na produção mais recente (sem misturar com o estoque anterior)
+    custo_ultima_producao: Optional[DecimalJson] = None
     quantidade_estoque: int
     descricao: Optional[str] = None
     ativo: bool

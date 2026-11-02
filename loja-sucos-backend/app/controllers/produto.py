@@ -12,14 +12,15 @@ from app.exceptions.db import instancia_nao_encontrada, erro_de_integridade_sql
 from app.exceptions.genericos import regra_de_negocio
 from app.models.ingrediente import Ingrediente
 from app.models.item_venda import ItemVenda
+from app.models.producao import Producao
 from app.models.produto import Produto
 from app.models.venda import Venda
 from app.schemas.produto import ProdutoCreate, ProdutoUpdate, ProdutoResponse
-from app.utils.estoque import arredondar_dinheiro
+from app.utils.estoque import arredondar_dinheiro, QUATRO_CASAS
 
 
 def query_produtos():
-    """Produtos com o nome da polpa/fruta e quantas unidades foram vendidas com custo zero"""
+    """Produtos com o nome da polpa/fruta, quantas unidades foram vendidas com custo zero e a última produção"""
     sem_custo = (
         select(ItemVenda.produto_id, func.sum(ItemVenda.quantidade).label("qtd"))
         .join(Venda, ItemVenda.venda_id == Venda.id)
@@ -27,17 +28,29 @@ def query_produtos():
         .group_by(ItemVenda.produto_id)
         .subquery()
     )
+    ultima_producao = (
+        select(Producao.produto_id, Producao.custo_total, Producao.quantidade_produzida)
+        .distinct(Producao.produto_id)
+        .order_by(Producao.produto_id, col(Producao.produzido_em).desc())
+        .subquery()
+    )
     return (
-        select(Produto, Ingrediente.nome, sem_custo.c.qtd)
+        select(Produto, Ingrediente.nome, sem_custo.c.qtd, ultima_producao.c.custo_total,
+               ultima_producao.c.quantidade_produzida)
         .outerjoin(Ingrediente, Produto.ingrediente_id == Ingrediente.id)
         .outerjoin(sem_custo, sem_custo.c.produto_id == Produto.id)
+        .outerjoin(ultima_producao, ultima_producao.c.produto_id == Produto.id)
     )
 
 
-def montar_produto_response(produto: Produto, ingrediente_nome: Optional[str],
-                            vendidos_sem_custo: Optional[int]) -> ProdutoResponse:
+def montar_produto_response(produto: Produto, ingrediente_nome: Optional[str], vendidos_sem_custo: Optional[int],
+                            custo_producao: Optional[Decimal], qtd_producao: Optional[int]) -> ProdutoResponse:
+    custo_ultima_producao = None
+    if qtd_producao:
+        custo_ultima_producao = (Decimal(custo_producao) / qtd_producao).quantize(QUATRO_CASAS)
     return ProdutoResponse.model_validate({**produto.model_dump(), "ingrediente_nome": ingrediente_nome,
-                                           "vendidos_sem_custo": int(vendidos_sem_custo or 0)})
+                                           "vendidos_sem_custo": int(vendidos_sem_custo or 0),
+                                           "custo_ultima_producao": custo_ultima_producao})
 
 
 async def validar_ingrediente_base(db: AsyncSession, ingrediente_id: Optional[UUID]):

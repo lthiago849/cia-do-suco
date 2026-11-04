@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Plus, Trash, Warning } from "@phosphor-icons/react";
 
@@ -369,6 +369,9 @@ function CompraModal({ aberto, onFechar, produtos, ingredientes, onSalvo }: Comp
                   </button>
                 ))}
               </div>
+              <span className="texto-suave">
+                Fica anotado no histórico da compra e ajuda a saber de qual lote veio um descarte.
+              </span>
             </div>
           )}
           <label className="campo">
@@ -469,10 +472,19 @@ function DescarteModal({ aberto, onFechar, ingredientes, produtos, onSalvo }: De
   const [tipo, id] = alvo.split(":");
   const ehProduto = tipo === "produto";
 
-  // Abre já com a garrafa selecionada, que é o caso mais comum
+  // Abre já com a garrafa selecionada, que é o caso mais comum. Só uma vez por abertura:
+  // se a pessoa tirar a garrafa no X, ela não pode voltar sozinha.
+  const garrafaPreSelecionada = useRef(false);
   useEffect(() => {
-    if (aberto && !alvo && garrafa) setAlvo(`ingrediente:${garrafa.id}`);
-  }, [aberto, alvo, garrafa]);
+    if (!aberto) {
+      garrafaPreSelecionada.current = false;
+      return;
+    }
+    if (!garrafaPreSelecionada.current && garrafa) {
+      garrafaPreSelecionada.current = true;
+      setAlvo((atual) => atual || `ingrediente:${garrafa.id}`);
+    }
+  }, [aberto, garrafa]);
 
   useEffect(() => {
     setCompraId("");
